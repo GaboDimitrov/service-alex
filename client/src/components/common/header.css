@@ -1,0 +1,14 @@
+.header {
+    background: #4A525F;
+    width: 100%;
+    height: 100px;
+}
+
+.logo {
+    color: white;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+}
+
+.logo-alex {
+    color: red;
+}
