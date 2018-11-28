@@ -6,7 +6,7 @@ import Header from './components/common/header.jsx'
 import AuthenticatedComponent from './components/common/authentiactedComponent'
 import Register from './components/register/register.jsx'
 import Dashboard from './components/dashboard/dashboard.jsx'
-import { Grid, Row } from 'react-bootstrap'
+import { Grid } from 'react-bootstrap'
 
 const Error = () => {
   return <div>404 Not Found </div>
@@ -19,7 +19,6 @@ class App extends Component {
       <BrowserRouter>
         <Header />
         <Grid>
-          <Row className="show-grid">
           <Switch>
             <Route path="/" component={Login} exact />
             <Route path="/register" component={Register} />
@@ -29,7 +28,6 @@ class App extends Component {
             </AuthenticatedComponent>
             <Route component={Error}/>
           </Switch>
-        </Row>
       </Grid>
     </BrowserRouter>
   )
