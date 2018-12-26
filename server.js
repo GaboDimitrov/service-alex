@@ -2,6 +2,7 @@ const express = require('express')
 const aws = require('./aws-test')
 const cron = require('node-cron')
 const authController = require('./controllers/authController')
+const customerController = require('./controllers/customerController')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 require('./services/passport')
@@ -33,6 +34,11 @@ app.post('/register', (req, res, next) => {
 app.post('/login', requireSignIn, authController.login)
 
 app.get('/getUser', requireAuth, authController.getUser)
+
+app.post('/addCustomer', customerController.add)
+app.post('/recentlyAdded', customerController.findByDate)
+app.post('/findByCarNumber', customerController.findByCarNumber)
+app.post('/updateCustomer', customerController.update)
 
 // cron.schedule('1 * * * * *', () => {
     console.log('scheduler? 1')

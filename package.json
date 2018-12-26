@@ -24,6 +24,7 @@
         "react-bootstrap": "^0.32.4",
         "react-css-modules": "^4.7.7",
         "react-dom": "^16.6.1",
+        "react-notifications": "^1.4.3",
         "react-router": "^4.3.1",
         "react-router-dom": "^4.4.0-beta.6",
         "react-router5": "^6.5.3",
