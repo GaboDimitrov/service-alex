@@ -11,15 +11,16 @@ import {
     DropdownButton,
     MenuItem,
     ListGroup,
+    InputGroup,
     ListGroupItem
 } from 'react-bootstrap'
-import './dashboard.css'
+import styles from './dashboard.css'
 import CustomerFoundForm from './CustomerFoundForm'
 import 'react-notifications/lib/notifications.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
-
 const CAR_REGEX = /(^[ABEKMHOPCTYX]{1,2})\d{4}([ABEKMHOPCTYX]{1,2}$)/
+const PHONE_REGEX = /8[789]\d{7}/
 const NAME_ERROR_VALUE = 'Името не може да е празно'
 
 class Dashboard extends Component {
@@ -30,14 +31,19 @@ class Dashboard extends Component {
         this.getAddFormValidationState = this.getAddFormValidationState.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.handlePhoneChange = this.handlePhoneChange.bind(this)
+        this.clearForm = this.clearForm.bind(this)
+        this.dashboardForm = React.createRef()
     }
 
     state = {
         carNumber: '',
         firstName: '',
         lastName: '',
+        phoneNumber: '',
         carNumberError: '',
         nameError: '',
+        phoneNumberError: '',
         addCustomerForm: {
         },
         editCustomerForm: {
@@ -51,10 +57,14 @@ class Dashboard extends Component {
         event.preventDefault()
         //TODO: add validation
         const { target } = event
-        const { firstName, lastName, carNumber } = target
+        const { firstName, lastName, carNumber, phoneNumber } = target
         if (!firstName.value || !lastName.value) {
-            console.log('HERE!!!!')
             this.setState({nameError: NAME_ERROR_VALUE})
+            return
+        }
+
+        if (!phoneNumber.value) {
+            this.setState({phoneError: 'въведете телефонен номер'})
             return
         }
 
@@ -75,6 +85,11 @@ class Dashboard extends Component {
 
             NotificationManager.success('Клиента е добавен', 'Успех', 3000)
         }
+    }
+
+    clearForm() {
+        this.dashboardForm.current.reset()
+        this.setState({ carNumber: null, searchedCustomers: null })
     }
 
     mapEventToDate(event) {
@@ -133,7 +148,6 @@ class Dashboard extends Component {
 
     async searchCustomer(event) {
         //This will search for customers on typing. If custoemer exists, it will show it, otherwise it will display the rest of the form
-        console.log('searchCustomer')
         const carNumber = event.target.value
         let searchedCustomers
         const isNumberValid = CAR_REGEX.test(carNumber)
@@ -144,12 +158,10 @@ class Dashboard extends Component {
             body: JSON.stringify({carNumber})
         })
 
-        console.log(response)
         if (response.status === 200) {
             const responseBody = await response.json()
             const { customers } = responseBody
 
-            console.log('SearchedCustomers')
             console.log(customers)
             searchedCustomers = customers
         }
@@ -178,53 +190,86 @@ class Dashboard extends Component {
         if (nameError && lastName.length === 0 ) return 'error'
     }
 
-    handleChange(e){
+    getPhoneNumberValidationState() {
+        const { phoneNumber } = this.state
+        console.log('getPhoneNumberValidationState')
+        console.log(phoneNumber)
+        console.log(`phoneNumber`)
+        console.log(PHONE_REGEX.test(phoneNumber))
+        if (phoneNumber && !PHONE_REGEX.test(phoneNumber)) return 'error'
+    }
+
+    handleChange(e) {
         this.setState({[e.target.name]: e.target.value})
     }
 
+    handlePhoneChange(e) {
+        console.log(`handlePhoneChange`)
+        console.log(e.target.value)
+        const isPhoneValid = PHONE_REGEX.test(e.target.value)
+        const stateObj = isPhoneValid ? {phoneNumber: e.target.value} : {phoneNumberError: 'грешен телефонен номер'}
+        this.setState(stateObj)
+    }
 
+    displayAddform() {
+        const { nameError, phoneNumberError } = this.state
+        return (
+            <React.Fragment>
+                <FormGroup
+                    controlId="firstName"
+                    required
+                    validationState={this.getFirstNameValidationState()}
+                >
+                    <ControlLabel>Първо име</ControlLabel>
+                    <FormControl required type="text" placeholder="Въведете първо име" name="firstName" onChange={this.handleChange}/>
+                    <FormControl.Feedback />
+                    <HelpBlock>{nameError}</HelpBlock>
+                </FormGroup>
 
-displayAddform() {
-    const { nameError } = this.state
-    return (
-        <React.Fragment>
-        <FormGroup
-            controlId="firstName"
-            required
-            validationState={this.getFirstNameValidationState()}
-        >
-            <ControlLabel>Първо име</ControlLabel>
-            <FormControl required type="text" placeholder="Въведете първо име" name="firstName" onChange={this.handleChange}/>
-            <FormControl.Feedback />
-            <HelpBlock>{nameError}</HelpBlock>
-        </FormGroup>
+                <FormGroup
+                    controlId="lastName"
+                    validationState={this.getLastNameValidationState()}
+                >
+                    <ControlLabel>Фамилия</ControlLabel>
+                    <FormControl type="text" placeholder="Въведете фамилия" name="lastName" onChange={this.handleChange}/>
+                    <FormControl.Feedback />
+                    <HelpBlock>{nameError}</HelpBlock>
+                </FormGroup>
+                <FormGroup
+                    controlId="phoneNumber"
+                    validationState={this.getPhoneNumberValidationState()}
+                >
+                    <ControlLabel>Телефонен номер</ControlLabel>
+                    <InputGroup>
+                        <InputGroup.Addon>+365</InputGroup.Addon>
+                        <FormControl type="text" placeholder="Въведете Телефон" name="lastName" onChange={this.handlePhoneChange}/>
+                    </InputGroup>
+                        <FormControl.Feedback />
+                        <HelpBlock>{phoneNumberError}</HelpBlock>
+                </FormGroup>
+                <Button type="submit" bsStyle="primary">Добави</Button>
+            </React.Fragment>
+        )
+    }
 
-        <FormGroup
-            controlId="lastName"
-            validationState={this.getLastNameValidationState()}
-        >
-            <ControlLabel>Фамилия</ControlLabel>
-            <FormControl type="text" placeholder="Въведете фамилия" name="lastName" onChange={this.handleChange}/>
-            <FormControl.Feedback />
-            <HelpBlock>{nameError}</HelpBlock>
-        </FormGroup>
-         <Button type="submit" bsStyle="primary">Добави</Button>
-        </React.Fragment>
-    )
-}
     render() {
         const { dropdownTitle, customers, carNumberError, carNumber, searchedCustomers } = this.state
         const shouldDisplayAddForm = searchedCustomers && searchedCustomers.length === 0 && carNumber && carNumberError.length === 0
-        const shouldDisplayViewForm = searchedCustomers && searchedCustomers.length > 0
+        const shouldDisplayViewForm = searchedCustomers && searchedCustomers.length > 0 && !carNumberError && carNumber
+
+        console.log(`shouldDisplayAddForm`)
+        console.log(shouldDisplayAddForm)
+        console.log(`shouldDisplayViewForm`)
+        console.log(shouldDisplayViewForm)
         return (
-            <Row className="show-grid">
+            <Row className={`show-grid ${styles.dashboard}`}>
                 <Col md={5}>
-                <Panel>
+                <Panel bsStyle="info">
                     <Panel.Heading>
                     <Panel.Title componentClass="h3">Добави/Намери клиент</Panel.Title>
                     </Panel.Heading>
                     <Panel.Body>
-                    <form method="POST" action="/addCustomer" onSubmit={this.handleSubmit}>
+                    <form method="POST" action="/addCustomer" onSubmit={this.handleSubmit} ref={this.dashboardForm}>
                         <FormGroup
                             controlId="addCustomer"
                             validationState={this.getAddFormValidationState()}
@@ -235,14 +280,14 @@ displayAddform() {
                             <HelpBlock>{carNumberError}</HelpBlock>
                         </FormGroup>
                             {shouldDisplayAddForm ? this.displayAddform() : null}
-                            {shouldDisplayViewForm ? <CustomerFoundForm customer={searchedCustomers[0]} /> : null}
+                            {shouldDisplayViewForm ? <CustomerFoundForm customer={searchedCustomers[0]} clearDashboardForm={this.clearForm} /> : null}
                    </form>
                     </Panel.Body>
                 </Panel>
                 </Col>
 
                 <Col mdOffset={1} md={5}>
-                <Panel>
+                <Panel bsStyle="info">
                     <Panel.Heading>
                     <Panel.Title componentClass="h3">Наскоро добавени</Panel.Title>
                     </Panel.Heading>
@@ -263,8 +308,10 @@ displayAddform() {
 
                             <ListGroup>
                                 {customers.map(customer => {
+
+                            const date = new Date(customer.addedOn)
                             return (
-                                <ListGroupItem>{customer.firstName} - {customer.addedOn}</ListGroupItem>
+                                <ListGroupItem>{customer.firstName} - {date.toLocaleDateString('bg-BG')}</ListGroupItem>
                             )
                         })}
                             </ListGroup>

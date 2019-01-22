@@ -1,12 +1,14 @@
 const AWS = require('aws-sdk')
-
+const customerController = require('./controllers/customerController')
 module.exports = function() {
     AWS.config.update( {region: 'eu-west-1'} )
-    const today = new Date()
-    const nextweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()+7);
-    var params = {
-        Message: 'я да видимasdas', /* required */
-        PhoneNumber: '+359894625264',
+
+    const customers = customerController.getAllExpiringReviews()
+
+    customers.each(customer => {
+      var params = {
+        Message: `Здравейте, от сервиз алекс искаме да ви съобщим, че прегледа на автомобил с регистрационен номер ${customer.carNumber} изтича след 7 дни.`, /* required */
+        PhoneNumber: `+359${customer.PhoneNumber}`,
       };
       // Create promise and SNS service object
       var publishTextPromise = new AWS.SNS({apiVersion: '2010-03-31'}).publish(params).promise();
@@ -20,4 +22,5 @@ module.exports = function() {
           function(err) {
           console.error(err, err.stack);
         });
+    })
 }

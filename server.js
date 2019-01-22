@@ -18,14 +18,6 @@ app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/c
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json({type: '*/*'}));
 
-app.get('/', (req, res) => {
-    res.render('index')
-})
-
-// app.get('/register', (req, res) => {
-//     res.send({express: 'Wazaaa'})
-// })
-
 app.post('/register', (req, res, next) => {
     const jwt = authController.register(req, res, next)
     console.log(jwt)
@@ -40,11 +32,13 @@ app.post('/recentlyAdded', customerController.findByDate)
 app.post('/findByCarNumber', customerController.findByCarNumber)
 app.post('/updateCustomer', customerController.update)
 
-// cron.schedule('1 * * * * *', () => {
+cron.schedule('0 21 * * *', () => {
     console.log('scheduler? 1')
-   //  aws()
+    aws()
     console.log('scheduler? 2')
-// })
+}, {
+    timezone: 'Europe/Sofia'
+})
 app.listen(port, () => {
     console.log(`server up and running on port ${port}`)
 });
