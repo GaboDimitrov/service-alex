@@ -193,6 +193,7 @@ class Dashboard extends Component {
     getPhoneNumberValidationState() {
         const { phoneNumber } = this.state
         console.log('getPhoneNumberValidationState')
+
         console.log(phoneNumber)
         console.log(`phoneNumber`)
         console.log(PHONE_REGEX.test(phoneNumber))
