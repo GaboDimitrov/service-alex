@@ -1,17 +1,20 @@
 import React from 'react'
-import styles from './header.css'
+import { NavLink } from 'react-router-dom'
+import './header.css'
 import { Grid, Row, Col } from 'react-bootstrap'
 
 const Header = () => {
 
     return (
-        <div className={styles.header}>
+        <div className='header'>
             <Grid>
                 <Row>
-                    <Col md={11}>
-                        <div className={styles.logo}>
-                            <h2><span className={styles.logo_alex}>Alex</span></h2>
+                    <Col md={14}>
+                        <div className="logo">
+                            <h2>Service <span className="logo-alex">Alex</span></h2>
                         </div>
+                        <NavLink to="/home">Home</NavLink>
+                        <NavLink to="/">Home</NavLink>
                     </Col>
                 </Row>
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import Login from './components/login/login.jsx'
+import Home from './components/home/home'
 import Header from './components/common/header.jsx'
 import AuthenticatedComponent from './components/common/authentiactedComponent'
 import Register from './components/register/register.jsx'
@@ -11,6 +12,7 @@ const Error = () => {
   return <div>404 Not Found </div>
 }
 
+
 class App extends Component {
   render() {
     return (
@@ -20,6 +22,7 @@ class App extends Component {
           <Switch>
             <Route path="/" component={Login} exact />
             <Route path="/register" component={Register} />
+            <Route path="/home" component={Home} />
             <AuthenticatedComponent>
               <Route path="/dashboard" component={Dashboard} />
             </AuthenticatedComponent>

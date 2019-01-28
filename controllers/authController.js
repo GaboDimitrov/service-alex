@@ -5,6 +5,7 @@ const config = require('../config')
 exports.login = function(req, res) {
     console.log(tokenForUser(req.user))
     res.send({ token: tokenForUser(req.user)})
+    // TODO: implement LOGIN
 }
 
 const tokenForUser = user => {
