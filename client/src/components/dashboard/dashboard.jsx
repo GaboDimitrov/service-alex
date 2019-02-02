@@ -37,13 +37,13 @@ class Dashboard extends Component {
     }
 
     state = {
-        carNumber: '',
+        carNumber: null,
         firstName: '',
         lastName: '',
-        phoneNumber: '',
-        carNumberError: '',
-        nameError: '',
-        phoneNumberError: '',
+        phoneNumber: null,
+        carNumberError: null,
+        nameError: null,
+        phoneNumberError: null,
         addCustomerForm: {
         },
         editCustomerForm: {
@@ -56,40 +56,51 @@ class Dashboard extends Component {
     async handleSubmit(event) {
         event.preventDefault()
         //TODO: add validation
-        const { target } = event
-        const { firstName, lastName, carNumber, phoneNumber } = target
-        if (!firstName.value || !lastName.value) {
+        const { firstName, lastName, carNumber, phoneNumber } = this.state
+
+        if (!firstName || !lastName) {
             this.setState({nameError: NAME_ERROR_VALUE})
             return
         }
 
-        if (!phoneNumber.value) {
+        if (!phoneNumber) {
             this.setState({phoneError: 'въведете телефонен номер'})
             return
         }
 
+        if (!PHONE_REGEX.test(phoneNumber)) {
+            this.setState({phoneError: 'грешен телефонен номер'})
+            return
+        }
+
         const response = await fetch('/addCustomer', {
-            method: 'POST',
+            method: 'POST', 
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({
-                firstName: firstName.value,
-                lastName: lastName.value,
-                carNumber: carNumber.value
+                firstName,
+                lastName,
+                carNumber,
+                phoneNumber
             })
         })
 
         if (response.status === 200) {
             const responseBody = await response.json()
             const { customer } = responseBody
-
-
             NotificationManager.success('Клиента е добавен', 'Успех', 3000)
+            this.clearForm()
         }
     }
 
     clearForm() {
         this.dashboardForm.current.reset()
-        this.setState({ carNumber: null, searchedCustomers: null })
+        this.setState({ 
+            carNumber: null, 
+            searchedCustomers: null,
+            firstName: '',
+            lastName: '',
+            phoneNumber: null 
+        })
     }
 
     mapEventToDate(event) {
@@ -138,10 +149,6 @@ class Dashboard extends Component {
         if (response.status === 200) {
             const responseBody = await response.json()
             const { customers } = responseBody
-
-            console.log('OK??')
-
-            console.log(customers)
             this.setState({customers})
         }
     }
@@ -162,7 +169,6 @@ class Dashboard extends Component {
             const responseBody = await response.json()
             const { customers } = responseBody
 
-            console.log(customers)
             searchedCustomers = customers
         }
 
@@ -170,7 +176,6 @@ class Dashboard extends Component {
     }
 
     getAddFormValidationState() {
-        console.log('getAddFormValidationState')
         const { carNumber } = this.state
         if (carNumber) {
             const isNumberValid = CAR_REGEX.test(carNumber)
@@ -182,21 +187,25 @@ class Dashboard extends Component {
 
     getFirstNameValidationState() {
         const { nameError, firstName } = this.state
-        if (nameError && firstName.length === 0 ) return 'error'
+
+        if (firstName.length === 0 && nameError === null) {
+            return 'error'
+        } 
+
+        return 'success'
     }
 
     getLastNameValidationState() {
         const { lastName, nameError } = this.state
-        if (nameError && lastName.length === 0 ) return 'error'
+        if (lastName.length === 0 && nameError === null) {
+            return 'error'
+        }
+
+        return `success`
     }
 
     getPhoneNumberValidationState() {
         const { phoneNumber } = this.state
-        console.log('getPhoneNumberValidationState')
-
-        console.log(phoneNumber)
-        console.log(`phoneNumber`)
-        console.log(PHONE_REGEX.test(phoneNumber))
         if (phoneNumber && !PHONE_REGEX.test(phoneNumber)) return 'error'
     }
 
@@ -205,10 +214,11 @@ class Dashboard extends Component {
     }
 
     handlePhoneChange(e) {
-        console.log(`handlePhoneChange`)
-        console.log(e.target.value)
         const isPhoneValid = PHONE_REGEX.test(e.target.value)
-        const stateObj = isPhoneValid ? {phoneNumber: e.target.value} : {phoneNumberError: 'грешен телефонен номер'}
+        const stateObj = {
+            phoneNumber: e.target.value, 
+            phoneNumberError: isPhoneValid ? '': 'грешен телефонен номер'
+        }
         this.setState(stateObj)
     }
 
@@ -258,70 +268,66 @@ class Dashboard extends Component {
         const shouldDisplayAddForm = searchedCustomers && searchedCustomers.length === 0 && carNumber && carNumberError.length === 0
         const shouldDisplayViewForm = searchedCustomers && searchedCustomers.length > 0 && !carNumberError && carNumber
 
-        console.log(`shouldDisplayAddForm`)
-        console.log(shouldDisplayAddForm)
-        console.log(`shouldDisplayViewForm`)
-        console.log(shouldDisplayViewForm)
         return (
             <Row className={`show-grid ${styles.dashboard}`}>
                 <Col md={5}>
-                <Panel bsStyle="info">
-                    <Panel.Heading>
-                    <Panel.Title componentClass="h3">Добави/Намери клиент</Panel.Title>
-                    </Panel.Heading>
-                    <Panel.Body>
-                    <form method="POST" action="/addCustomer" onSubmit={this.handleSubmit} ref={this.dashboardForm}>
-                        <FormGroup
-                            controlId="addCustomer"
-                            validationState={this.getAddFormValidationState()}
-                        >
-                            <ControlLabel>Регистрационен номер</ControlLabel>
-                            <FormControl required type="text" placeholder="Въведете регистрационен номер" name="carNumber" onChange={this.searchCustomer}/>
-                            <FormControl.Feedback />
-                            <HelpBlock>{carNumberError}</HelpBlock>
-                        </FormGroup>
-                            {shouldDisplayAddForm ? this.displayAddform() : null}
-                            {shouldDisplayViewForm ? <CustomerFoundForm customer={searchedCustomers[0]} clearDashboardForm={this.clearForm} /> : null}
-                   </form>
-                    </Panel.Body>
-                </Panel>
-                </Col>
-
-                <Col mdOffset={1} md={5}>
-                <Panel bsStyle="info">
-                    <Panel.Heading>
-                    <Panel.Title componentClass="h3">Наскоро добавени</Panel.Title>
-                    </Panel.Heading>
-                    <Panel.Body>
-                        <DropdownButton
-                            title={dropdownTitle}
-                            id="recently-added"
-                            onSelect={this.handleSelect}
-                            key={2}
+                    <Panel bsStyle="info">
+                        <Panel.Heading>
+                        <Panel.Title componentClass="h3">Добави/Намери клиент</Panel.Title>
+                        </Panel.Heading>
+                        <Panel.Body>
+                        <form method="POST" action="/addCustomer" onSubmit={this.handleSubmit} ref={this.dashboardForm}>
+                            <FormGroup
+                                controlId="addCustomer"
+                                validationState={this.getAddFormValidationState()}
                             >
-                            <MenuItem eventKey="1">1 Седмица</MenuItem>
-                            <MenuItem eventKey="2">1 Месец</MenuItem>
-                            <MenuItem eventKey="3">3 Месеца</MenuItem>
-                            <MenuItem eventKey="4">1 Година</MenuItem>
-                        </DropdownButton>
+                                <ControlLabel>Регистрационен номер</ControlLabel>
+                                <FormControl required type="text" placeholder="Въведете регистрационен номер" name="carNumber" onChange={this.searchCustomer}/>
+                                <FormControl.Feedback />
+                                <HelpBlock>{carNumberError}</HelpBlock>
+                            </FormGroup>
+                                {shouldDisplayAddForm ? this.displayAddform() : null}
+                                {shouldDisplayViewForm ? <CustomerFoundForm customer={searchedCustomers[0]} clearDashboardForm={this.clearForm} /> : null}
+                    </form>
+                        </Panel.Body>
+                    </Panel>
+                    </Col>
 
-                        {customers ? (
+                    <Col mdOffset={1} md={5}>
+                    <Panel bsStyle="info">
+                        <Panel.Heading>
+                        <Panel.Title componentClass="h3">Наскоро добавени</Panel.Title>
+                        </Panel.Heading>
+                        <Panel.Body>
+                            <DropdownButton
+                                title={dropdownTitle}
+                                id="recently-added"
+                                onSelect={this.handleSelect}
+                                key={2}
+                                >
+                                <MenuItem eventKey="1">1 Седмица</MenuItem>
+                                <MenuItem eventKey="2">1 Месец</MenuItem>
+                                <MenuItem eventKey="3">3 Месеца</MenuItem>
+                                <MenuItem eventKey="4">1 Година</MenuItem>
+                            </DropdownButton>
 
-                            <ListGroup>
-                                {customers.map(customer => {
+                            {customers ? (
 
-                            const date = new Date(customer.addedOn)
-                            return (
-                                <ListGroupItem>{customer.firstName} - {date.toLocaleDateString('bg-BG')}</ListGroupItem>
-                            )
-                        })}
-                            </ListGroup>
-                        ) : <h2>Избери дата</h2>}
-                    </Panel.Body>
-                </Panel>
+                                <ListGroup>
+                                    {customers.map(customer => {
+
+                                const date = new Date(customer.addedOn)
+                                return (
+                                    <ListGroupItem>{customer.firstName} - {date.toLocaleDateString('bg-BG')}</ListGroupItem>
+                                )
+                            })}
+                                </ListGroup>
+                            ) : <h2>Избери дата</h2>}
+                        </Panel.Body>
+                    </Panel>
                 </Col>
                 <NotificationContainer />
-                </Row>
+            </Row>
         )
     }
 }
