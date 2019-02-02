@@ -27,11 +27,7 @@ class CustomerFoundForm extends Component {
         const addedOn = new Date(customer.addedOn)
         const expiresOn = new Date(customer.expiresOn)
         const remainingDays = getRemainingDays(expiresOn)
-
-        console.log(remainingDays)
         const remainingDaysClass = getRemainingDaysClass(remainingDays)
-        console.log (remainingDaysClass)
-        console.log (`remainingDaysClass`)
         return(
             <React.Fragment>
                 <h2>Намерен клиент</h2>
