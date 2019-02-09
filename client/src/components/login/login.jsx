@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './login.css'
+import './login.css'
 import { FormControl, ControlLabel, Panel, Col, Row, Button} from 'react-bootstrap'
 
 
@@ -30,8 +30,8 @@ export default function Login (props) {
 
     return (
             <React.Fragment>
-                <div className={styles.login_background}></div>
-                <Row className={`show-grid ${styles.center}`}>
+                <div className="login_background"></div>
+                <Row className={`show-grid center`}>
                     <Col mdOffset={4} md={5}>
                         <Panel>
                             <Panel.Heading>

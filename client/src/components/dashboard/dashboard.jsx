@@ -14,7 +14,7 @@ import {
     InputGroup,
     ListGroupItem
 } from 'react-bootstrap'
-import styles from './dashboard.css'
+import './dashboard.css'
 import CustomerFoundForm from './CustomerFoundForm'
 import 'react-notifications/lib/notifications.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
@@ -269,7 +269,7 @@ class Dashboard extends Component {
         const shouldDisplayViewForm = searchedCustomers && searchedCustomers.length > 0 && !carNumberError && carNumber
 
         return (
-            <Row className={`show-grid ${styles.dashboard}`}>
+            <Row className={`show-grid dashboard`}>
                 <Col md={5}>
                     <Panel bsStyle="info">
                         <Panel.Heading>

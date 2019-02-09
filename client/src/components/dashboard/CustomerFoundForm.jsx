@@ -23,7 +23,15 @@ class CustomerFoundForm extends Component {
         }
     }
     render() {
-        const { customer } = this.props
+        const customer = { 
+            addedOn: "2019-02-02T16:14:49.337Z",
+            carNumber: "Y2222AT",
+            expiresOn: "2019-03-03T15:04:19.478Z",
+            firstName: "Gabo",
+            lastName: "Мошо",
+            notificationSent: false
+        }
+        // this.props
         const addedOn = new Date(customer.addedOn)
         const expiresOn = new Date(customer.expiresOn)
         const remainingDays = getRemainingDays(expiresOn)

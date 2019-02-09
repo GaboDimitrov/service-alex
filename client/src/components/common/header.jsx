@@ -1,16 +1,16 @@
 import React from 'react'
-import styles from './header.css'
+import './header.css'
 import { Grid, Row, Col } from 'react-bootstrap'
 
 const Header = () => {
 
     return (
-        <div className={styles.header}>
+        <div className="header">
             <Grid>
                 <Row>
                     <Col md={11}>
-                        <div className={styles.logo}>
-                            <h2><span className={styles.logo_alex}>Alex</span></h2>
+                        <div className="logo">
+                            <h2><span className="logo_alex">Alex</span></h2>
                         </div>
                     </Col>
                 </Row>
