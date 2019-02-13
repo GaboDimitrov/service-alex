@@ -18,10 +18,10 @@ app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/c
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json({type: '*/*'}));
 
-app.post('/register', (req, res, next) => {
-    const jwt = authController.register(req, res, next)
-    console.log(jwt)
-})
+// app.post('/register', (req, res, next) => {
+//     const jwt = authController.register(req, res, next)
+//     console.log(jwt)
+// })
 
 app.post('/login', requireSignIn, authController.login)
 
