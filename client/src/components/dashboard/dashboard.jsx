@@ -252,7 +252,7 @@ class Dashboard extends Component {
                 >
                     <ControlLabel>Телефонен номер</ControlLabel>
                     <InputGroup>
-                        <InputGroup.Addon>+365</InputGroup.Addon>
+                        <InputGroup.Addon>+359</InputGroup.Addon>
                         <FormControl type="text" placeholder="Въведете Телефон" name="lastName" onChange={this.handlePhoneChange}/>
                     </InputGroup>
                         <FormControl.Feedback />
