@@ -11,10 +11,8 @@ const requireAuth = passport.authenticate('jwt', {session: false})
 const requireSignIn = passport.authenticate('local', {session: false})
 const app = express()
 const port = process.env.PORT || 5000
-const mongoURL = process.env.MONGODB_URI ||'mongodb://localhost/service-alex'
 
-mongoose.connect('mongodb://heroku_s5x31l43:3a70hkbvqlbcsmpjvr8mvu03s8@ds129085.mlab.com:29085/heroku_s5x31l43')
-// mongoose.connect(mongoURL)
+mongoose.connect('mongodb://localhost/service-alex')
 
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/css'))
 app.use(bodyParser.urlencoded());
@@ -33,15 +31,6 @@ app.post('/addCustomer', customerController.add)
 app.post('/recentlyAdded', customerController.findByDate)
 app.post('/findByCarNumber', customerController.findByCarNumber)
 app.post('/updateCustomer', customerController.update)
-
-if (process.env.NODE_ENV === 'production') {
-    // Serve any static files
-    app.use(express.static(path.join(__dirname, 'client/build')));
-    // Handle React routing, return all requests to React app
-    app.get('*', function(req, res) {
-      res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-    });
-  }
 
 cron.schedule('0 11 * * *', () => {
     aws()
