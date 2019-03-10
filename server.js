@@ -11,8 +11,9 @@ const requireAuth = passport.authenticate('jwt', {session: false})
 const requireSignIn = passport.authenticate('local', {session: false})
 const app = express()
 const port = process.env.PORT || 5000
+const mongoURL = process.envMONGODB_URI ||'mongodb://localhost/service-alex'
 
-mongoose.connect('mongodb://localhost/service-alex')
+mongoose.connect(mongoURL)
 
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/css'))
 app.use(bodyParser.urlencoded());
