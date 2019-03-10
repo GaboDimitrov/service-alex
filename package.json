@@ -29,10 +29,10 @@
         "react-router": "^4.3.1",
         "react-router-dom": "^4.4.0-beta.6",
         "react-router5": "^6.5.3",
+        "concurrently": "^4.0.1",
         "webpack": "4.19.1"
     },
     "devDependencies": {
-        "concurrently": "^4.0.1",
         "eslint-config-airbnb": "17.1.0",
         "eslint-plugin-import": "^2.14.0",
         "eslint-plugin-jsx-a11y": "^6.1.1",
