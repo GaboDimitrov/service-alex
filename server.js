@@ -12,7 +12,7 @@ const requireSignIn = passport.authenticate('local', {session: false})
 const app = express()
 const port = process.env.PORT || 5000
 
-mongoose.connect('mongodb://localhost/service-alex')
+mongoose.connect('mongodb://heroku_s5x31l43:3a70hkbvqlbcsmpjvr8mvu03s8@ds129085.mlab.com:29085/heroku_s5x31l43')
 
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/css'))
 app.use(bodyParser.urlencoded());
