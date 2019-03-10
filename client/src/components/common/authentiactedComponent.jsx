@@ -4,7 +4,7 @@ import { getJWT, removeJWT } from '../../helpers/jwt'
 
 class AuthenticatedComponent extends Component {
     state = {
-        user: null
+        user: null 
     }
 
     componentDidMount() {

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import 'react-notifications/lib/notifications.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
-class Notification extends React.Component {
+class Notification extends Component {
   createNotification = (type, message, title) => {
     return () => {
       switch (type) {
@@ -18,6 +18,8 @@ class Notification extends React.Component {
         case 'error':
           NotificationManager.error(message, title, 5000)
           break
+        default :
+          break
       }
     }
   }
@@ -28,7 +30,6 @@ class Notification extends React.Component {
   }
 
   render() {
-      const { type, message, title } = this.props
       return (
       <div>
         <NotificationContainer/>

@@ -5,13 +5,8 @@ export default Register => {
     const onSubmit = async (e) => {
         e.preventDefault()
         const { target } = e
-        console.log(target)
         const { username, password } = target
-        console.log(username.value)
-        console.log(`name`)
-        console.log(password.value)
-        console.log(`password`)
-        const result = await fetch('/register', {
+        await fetch('/register', {
             method: 'post',
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({

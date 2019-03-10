@@ -85,8 +85,6 @@ class Dashboard extends Component {
         })
 
         if (response.status === 200) {
-            const responseBody = await response.json()
-            const { customer } = responseBody
             NotificationManager.success('Клиента е добавен', 'Успех', 3000)
             this.clearForm()
         }

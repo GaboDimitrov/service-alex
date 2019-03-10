@@ -23,24 +23,21 @@ class CustomerFoundForm extends Component {
         }
     }
     render() {
-        const customer = { 
-            addedOn: "2019-02-02T16:14:49.337Z",
-            carNumber: "Y2222AT",
-            expiresOn: "2019-03-03T15:04:19.478Z",
-            firstName: "Gabo",
-            lastName: "Мошо",
-            notificationSent: false
-        }
-        // this.props
-        const addedOn = new Date(customer.addedOn)
-        const expiresOn = new Date(customer.expiresOn)
+        const { customer } = this.props
+        const { firstName, lastName, addedOn, expiresOn } = customer
         const remainingDays = getRemainingDays(expiresOn)
         const remainingDaysClass = getRemainingDaysClass(remainingDays)
+        const addedOnDate = new Date(addedOn).toLocaleDateString()
+
         return(
             <React.Fragment>
                 <h2>Намерен клиент</h2>
-                <div>{customer.firstName} {customer.lastName}</div>
-                <div>Изтича след: <Alert bsStyle={remainingDaysClass}><strong>{remainingDays}  {remainingDays > 0 ? 'дни': 'ден'}</strong></Alert></div>
+                <div>{firstName} {lastName}</div>
+                <div>Добавен на:  <strong>{addedOnDate}</strong></div>
+                <div>Изтича след: {remainingDays}<Alert bsStyle={remainingDaysClass}>
+                    <strong>
+                        {remainingDays}  {remainingDays > 0 ? 'дни': 'ден'}
+                    </strong></Alert></div>
                 <Button bsStyle="primary" onClick={() => {this.handleClick()}}>Обнови преглед</Button>
                 <NotificationContainer/>
             </React.Fragment>
@@ -49,7 +46,8 @@ class CustomerFoundForm extends Component {
 }
 
 const getRemainingDays = expiresOn => {
-    const timeDiff = Math.abs(expiresOn.getTime() - new Date().getTime());
+    const expirationDate = new Date(expiresOn)
+    const timeDiff = Math.abs(expirationDate.getTime() - new Date().getTime());
     const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
     return diffDays
 }
