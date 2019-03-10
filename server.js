@@ -34,6 +34,15 @@ app.post('/recentlyAdded', customerController.findByDate)
 app.post('/findByCarNumber', customerController.findByCarNumber)
 app.post('/updateCustomer', customerController.update)
 
+if (process.env.NODE_ENV === 'production') {
+    // Serve any static files
+    app.use(express.static(path.join(__dirname, 'client/build')));
+    // Handle React routing, return all requests to React app
+    app.get('*', function(req, res) {
+      res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+    });
+  }
+
 cron.schedule('0 11 * * *', () => {
     aws()
 }, {
