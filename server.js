@@ -10,9 +10,10 @@ const passport = require('passport')
 const requireAuth = passport.authenticate('jwt', {session: false})
 const requireSignIn = passport.authenticate('local', {session: false})
 const app = express()
+const path = require('path');
 const port = process.env.PORT || 5000
 
-mongoose.connect('mongodb://localhost/service-alex')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/service-alex')
 
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/css'))
 app.use(bodyParser.urlencoded());
@@ -37,6 +38,16 @@ cron.schedule('0 11 * * *', () => {
 }, {
     timezone: 'Europe/Sofia'
 })
+
+if (process.env.NODE_ENV === 'production') {
+    // Serve any static files
+    app.use(express.static(path.join(__dirname, 'client/build')));
+    // Handle React routing, return all requests to React app
+    app.get('*', function(req, res) {
+      res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+    });
+  }
+
 app.listen(port, () => {
     console.log(`server up and running on port ${port}`)
 });
