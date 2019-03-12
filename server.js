@@ -13,7 +13,7 @@ const app = express()
 const path = require('path');
 const port = process.env.PORT || 5000
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/service-alex')
+mongoose.connect('mongodb://localhost/service-alex')
 
 app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/css'))
 app.use(bodyParser.urlencoded());
