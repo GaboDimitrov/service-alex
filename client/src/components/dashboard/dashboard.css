@@ -2,3 +2,11 @@
 .dashboard {
     margin-top: 50px;
 }
+
+.yearChange {
+    margin: 10px;
+}
+
+.year-input.year-input {
+    margin-right: 5px;
+}

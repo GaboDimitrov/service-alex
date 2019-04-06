@@ -1,8 +1,11 @@
 const Customer = require('../models/customer')
 
 exports.add = function(req, res, next) {
-    const { firstName, lastName, carNumber } = req.body
+    const { firstName, lastName, carNumber, selectedYear } = req.body
 
+    const expiresOn = getExpiresOnDate(selectedYear)
+
+    console.log(new Date(expiresOn))
     Customer.find({ carNumber }, (err, existingCustomer) => {
         if (err) {
             return next(err)
@@ -15,7 +18,8 @@ exports.add = function(req, res, next) {
         const customer = new Customer({
             firstName,
             lastName,
-            carNumber
+            carNumber,
+            expiresOn
         })
 
         customer.save(err => {
@@ -74,7 +78,7 @@ exports.update = function(req, res, next) {
 }
 
 exports.getAllExpiringReviews = function () {
-    const oneWeekFromNow = new Date() + 7 * 24 * 60 * 60 * 1000
+    const oneWeekFromNow = +new Date() + 7 * 24 * 60 * 60 * 1000
     Customer.find({
         expiresOn: oneWeekFromNow
     }, (err, customers) => {
@@ -84,4 +88,14 @@ exports.getAllExpiringReviews = function () {
 
         return customers
     })
+}
+
+function getExpiresOnDate(selectedYear) {
+    const expiresDateInMilisecs = +new Date() + (365 * selectedYear) * 24 * 60 * 60 * 1000
+    const expiresOnDate = new Date(expiresDateInMilisecs)
+    expiresOnDate.setHours(0)
+    expiresOnDate.setMinutes(0)
+    expiresOnDate.setSeconds(0)
+    expiresOnDate.setMilliseconds(0)
+    return expiresOnDate.getTime()
 }

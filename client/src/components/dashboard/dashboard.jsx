@@ -32,6 +32,7 @@ class Dashboard extends Component {
         this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handlePhoneChange = this.handlePhoneChange.bind(this)
+        this.handleYearChange = this.handleYearChange.bind(this)
         this.clearForm = this.clearForm.bind(this)
         this.dashboardForm = React.createRef()
     }
@@ -50,13 +51,14 @@ class Dashboard extends Component {
         },
         dropdownTitle: "Избери преди",
         customers: null,
-        searchedCustomers: null
+        searchedCustomers: null,
+        selectedYear: 1
     }
 
     async handleSubmit(event) {
         event.preventDefault()
         //TODO: add validation
-        const { firstName, lastName, carNumber, phoneNumber } = this.state
+        const { firstName, lastName, carNumber, phoneNumber, selectedYear } = this.state
 
         if (!firstName || !lastName) {
             this.setState({nameError: NAME_ERROR_VALUE})
@@ -80,7 +82,8 @@ class Dashboard extends Component {
                 firstName,
                 lastName,
                 carNumber,
-                phoneNumber
+                phoneNumber,
+                selectedYear
             })
         })
 
@@ -97,7 +100,8 @@ class Dashboard extends Component {
             searchedCustomers: null,
             firstName: '',
             lastName: '',
-            phoneNumber: null 
+            phoneNumber: null,
+            selectedYear: 1
         })
     }
 
@@ -220,8 +224,13 @@ class Dashboard extends Component {
         this.setState(stateObj)
     }
 
+    handleYearChange(event) {
+        const { value } = event.target
+        this.setState({ selectedYear: value })
+    }
+
     displayAddform() {
-        const { nameError, phoneNumberError } = this.state
+        const { nameError, phoneNumberError, selectedYear } = this.state
         return (
             <React.Fragment>
                 <FormGroup
@@ -256,6 +265,39 @@ class Dashboard extends Component {
                         <FormControl.Feedback />
                         <HelpBlock>{phoneNumberError}</HelpBlock>
                 </FormGroup>
+                <div>
+                    <label className="yearChange" >
+                        <input 
+                            type="radio" 
+                            value="1" 
+                            checked={selectedYear === '1'} 
+                            onChange={this.handleYearChange}
+                            className="year-input"
+                        />
+                        1 година
+                    </label>
+                    <label className="yearChange" >
+                        <input 
+                            type="radio" 
+                            value="2" 
+                            checked={selectedYear === '2'}
+                            onChange={this.handleYearChange} 
+                            className="year-input"
+                        />
+                        2 години
+                    </label>
+                    <label className="yearChange" >
+                        <input 
+                            type="radio" 
+                            value="0.5" 
+                            checked={selectedYear === '0.5'} 
+                            onChange={this.handleYearChange} 
+                            className="year-input"
+                        />
+                        половин година
+                    </label>
+                </div>
+
                 <Button type="submit" bsStyle="primary">Добави</Button>
             </React.Fragment>
         )
