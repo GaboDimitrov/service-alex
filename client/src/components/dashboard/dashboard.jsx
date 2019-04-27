@@ -20,7 +20,7 @@ import 'react-notifications/lib/notifications.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 const CAR_REGEX = /(^[ABEKMHOPCTYX]{1,2})\d{4}([ABEKMHOPCTYX]{1,2}$)/
-const PHONE_REGEX = /8[789]\d{7}/
+const PHONE_REGEX = /[89][789]\d{7}/
 const NAME_ERROR_VALUE = 'Името не може да е празно'
 
 class Dashboard extends Component {
