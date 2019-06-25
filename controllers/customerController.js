@@ -1,8 +1,7 @@
 const Customer = require('../models/customer')
 
 exports.add = function(req, res, next) {
-    const { firstName, lastName, carNumber, selectedYear } = req.body
-    
+    const { firstName, lastName, carNumber, selectedYear, phoneNumber } = req.body    
     const expiresDateInMilisecs = +new Date() + (365 * selectedYear) * 24 * 60 * 60 * 1000
     const expiresOn = removeHoursAndMinutesFromDate(expiresDateInMilisecs)
 
@@ -19,7 +18,8 @@ exports.add = function(req, res, next) {
             firstName,
             lastName,
             carNumber,
-            expiresOn
+            expiresOn,
+            phoneNumber
         })
 
         customer.save(err => {
