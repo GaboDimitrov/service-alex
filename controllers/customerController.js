@@ -81,7 +81,9 @@ exports.getAllExpiringReviews = function () {
     const oneWeekFromNowTime = +new Date() + 7 * 24 * 60 * 60 * 1000
     const strippedDate = removeHoursAndMinutesFromDate(oneWeekFromNowTime)
     const gteDate = new Date(strippedDate)
-    const ltDate = newDate(strippedDate).addDays(1)
+    const ltTime = strippedDate + (24 * 60 * 60 * 1000)
+    const ltDate = new Date(ltTime)
+
     Customer.find({
         expiresOn: {"$gte": gteDate, "$lt": ltDate}
     }, (err, customers) => {
