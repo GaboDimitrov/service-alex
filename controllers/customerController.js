@@ -77,13 +77,13 @@ exports.update = function(req, res, next) {
     })
 }
 
-exports.getAllExpiringReviews = function () {
+exports.getAllExpiringReviews = function (callback) {
     const oneWeekFromNowTime = +new Date() + 7 * 24 * 60 * 60 * 1000
     const strippedDate = removeHoursAndMinutesFromDate(oneWeekFromNowTime)
     const gteDate = new Date(strippedDate)
     const ltTime = strippedDate + (24 * 60 * 60 * 1000)
     const ltDate = new Date(ltTime)
-
+    
     Customer.find({
         expiresOn: {"$gte": gteDate, "$lt": ltDate}
     }, (err, customers) => {
@@ -91,7 +91,7 @@ exports.getAllExpiringReviews = function () {
             throw err
         }
 
-        return customers
+        callback(customers)
     })
 }
 
