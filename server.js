@@ -34,7 +34,8 @@ app.post('/findByCarNumber', customerController.findByCarNumber)
 app.post('/updateCustomer', customerController.update)
 
 cron.schedule('0 11 * * *', () => {
-    aws()
+  console.log('Chron started')
+  aws()
 }, {
     timezone: 'Europe/Sofia'
 })
