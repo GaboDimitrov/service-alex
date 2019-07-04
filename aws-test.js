@@ -4,9 +4,7 @@ module.exports = function() {
     AWS.config.update( {region: 'eu-west-1'} )
 
     customerController.getAllExpiringReviews(customers => {
-      console.log('Customers')
-      console.log(customers)
-      customers.each(customer => {
+      customers.forEach(customer => {
         var params = {
           Message: `Здравейте, от сервиз алекс искаме да ви съобщим, че прегледа на автомобил с регистрационен номер ${customer.carNumber} изтича след 7 дни.`, /* required */
           PhoneNumber: `+359${customer.PhoneNumber}`,
