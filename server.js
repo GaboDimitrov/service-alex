@@ -1,6 +1,4 @@
 const express = require('express')
-const aws = require('./aws-test')
-const cron = require('node-cron')
 const authController = require('./controllers/authController')
 const customerController = require('./controllers/customerController')
 const bodyParser = require('body-parser')
@@ -32,13 +30,6 @@ app.post('/addCustomer', customerController.add)
 app.post('/recentlyAdded', customerController.findByDate)
 app.post('/findByCarNumber', customerController.findByCarNumber)
 app.post('/updateCustomer', customerController.update)
-
-cron.schedule('0 11 * * *', () => {
-  console.log('Chron started')
-  aws()
-}, {
-    timezone: 'Europe/Sofia'
-})
 
 if (process.env.NODE_ENV === 'production') {
     // Serve any static files
