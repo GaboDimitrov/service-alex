@@ -64,9 +64,9 @@ exports.findByCarNumber = function(req, res, next) {
 }
 
 exports.update = function(req, res, next) {
-    const { id } = req.body
+    const { customer } = req.body
 
-    Customer.findByIdAndUpdate(id, {addedOn: new Date(), notificationSent: false}, null, (err, customer) => {
+    Customer.findByIdAndUpdate(customer._id, customer, null, (err, customer) => {
         if (err) {
             console.log(err)
             next(err)
@@ -84,14 +84,18 @@ exports.getAllExpiringReviews = function (callback) {
     const ltTime = strippedDate + (24 * 60 * 60 * 1000)
     const ltDate = new Date(ltTime)
     
+    console.log('gteDate')
+    console.log(gteDate)
+    console.log('ltDate')
+    console.log(ltDate)
     Customer.find({
         expiresOn: {"$gte": gteDate, "$lt": ltDate}
     }, (err, customers) => {
         if (err) {
             throw err
-        }
-
-        callback(customers)
+        }    
+        console.log('asdasdasd')
+        callback(customers, Customer)
     })
 }
 
