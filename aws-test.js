@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk')
 const customerController = require('./controllers/customerController')
 const AWS_CONFIG_OBJECT = {region: 'eu-west-1'}
+console.log('test PROD')
 
 if (process.env.SNS_KEY && process.env.SNS_SECRET) {
   AWS_CONFIG_OBJECT.accessKeyId = process.env.SNS_KEY
@@ -8,7 +9,9 @@ if (process.env.SNS_KEY && process.env.SNS_SECRET) {
 }
 AWS.config.update(AWS_CONFIG_OBJECT)
 
+console.log(AWS_CONFIG_OBJECT) 
 customerController.getAllExpiringReviews(customers => {
+  console.log('customers')
   customers.forEach(customer => {
     var params = {
       Message: `Здравейте, от сервиз алекс искаме да ви съобщим, че прегледа на автомобил с регистрационен номер ${customer.carNumber} изтича след 7 дни.`, /* required */
