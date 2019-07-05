@@ -92,6 +92,8 @@ exports.getAllExpiringReviews = function (callback) {
         expiresOn: {"$gte": gteDate, "$lt": ltDate}
     }, (err, customers) => {
         if (err) {
+            console.log(err)
+            console.log('error')
             throw err
         }    
         console.log('asdasdasd')
