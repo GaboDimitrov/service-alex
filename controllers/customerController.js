@@ -19,7 +19,8 @@ exports.add = function(req, res, next) {
             lastName,
             carNumber,
             expiresOn,
-            phoneNumber
+            phoneNumber,
+            selectedYear
         })
 
         customer.save(err => {
@@ -65,14 +66,14 @@ exports.findByCarNumber = function(req, res, next) {
 
 exports.update = function(req, res, next) {
     const { customer } = req.body
-
+    const expiresDateInMilisecs = +new Date() + (365 * customer.selectedYear) * 24 * 60 * 60 * 1000
+    const expiresOn = removeHoursAndMinutesFromDate(expiresDateInMilisecs)
+    customer.expiresOn = expiresOn
     Customer.findByIdAndUpdate(customer._id, customer, null, (err, customer) => {
         if (err) {
             console.log(err)
             next(err)
         }
-
-
         res.json({customer})
     })
 }
@@ -84,10 +85,6 @@ exports.getAllExpiringReviews = function (callback) {
     const ltTime = strippedDate + (24 * 60 * 60 * 1000)
     const ltDate = new Date(ltTime)
     
-    console.log('gteDate')
-    console.log(gteDate)
-    console.log('ltDate')
-    console.log(ltDate)
     Customer.find({
         expiresOn: {"$gte": gteDate, "$lt": ltDate}
     }, (err, customers) => {

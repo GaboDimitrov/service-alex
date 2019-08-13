@@ -1,7 +1,6 @@
 const AWS = require('aws-sdk')
 const customerController = require('./controllers/customerController')
 const AWS_CONFIG_OBJECT = {region: 'eu-west-1'}
-console.log('test PROD')
 
 const mongoose = require('mongoose')
 mongoose.connect(process.env.MONGODB_URI)
@@ -12,9 +11,7 @@ if (process.env.SNS_KEY && process.env.SNS_SECRET) {
 }
 AWS.config.update(AWS_CONFIG_OBJECT)
 
-console.log(AWS_CONFIG_OBJECT) 
 customerController.getAllExpiringReviews((customers, Customer) => {
-  console.log('customers')
   customers.forEach(customer => {
     if (customer.notificationSent) {
       return
