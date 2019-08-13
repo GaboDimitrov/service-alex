@@ -44,7 +44,8 @@ customerController.getAllExpiringReviews((customers, Customer) => {
 })
 
 const updateCustomer = (customer, Customer) => {
-  Customer.findByIdAndUpdate(customer._id, { ...customer, notificationSent: true}, null, (err, customer) => {
+  customer.notificationSent = true
+  Customer.findByIdAndUpdate(customer._id, customer, null, (err, customer) => {
     if (err) {
         console.log(err)
         next(err)
