@@ -13,9 +13,13 @@ if (process.env.SNS_KEY && process.env.SNS_SECRET) {
 AWS.config.update(AWS_CONFIG_OBJECT)
 
 console.log(AWS_CONFIG_OBJECT) 
-customerController.getAllExpiringReviews(customers => {
+customerController.getAllExpiringReviews((customers, Customer) => {
   console.log('customers')
   customers.forEach(customer => {
+    if (customer.notificationSent) {
+      return
+    }
+
     var params = {
       Message: `Здравейте, от сервиз алекс искаме да ви съобщим, че прегледа на автомобил с регистрационен номер ${customer.carNumber} изтича след 7 дни.`, /* required */
       PhoneNumber: `+359${customer.phoneNumber}`,
@@ -28,9 +32,22 @@ customerController.getAllExpiringReviews(customers => {
       function(data) {
         console.log("MessageID is " + data.MessageId);
         console.log(data);
+        updateCustomer(customer, Customer)
+
       }).catch(
         function(err) {
         console.error(err, err.stack);
       });
   })
+
+  return
 })
+
+const updateCustomer = (customer, Customer) => {
+  Customer.findByIdAndUpdate(customer._id, { ...customer, notificationSent: true}, null, (err, customer) => {
+    if (err) {
+        console.log(err)
+        next(err)
+    }
+  })
+}
