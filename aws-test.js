@@ -3,6 +3,9 @@ const customerController = require('./controllers/customerController')
 const AWS_CONFIG_OBJECT = {region: 'eu-west-1'}
 console.log('test PROD')
 
+const mongoose = require('mongoose')
+mongoose.connect(process.env.MONGODB_URI)
+
 if (process.env.SNS_KEY && process.env.SNS_SECRET) {
   AWS_CONFIG_OBJECT.accessKeyId = process.env.SNS_KEY
   AWS_CONFIG_OBJECT.secretAccessKey = process.env.SNS_SECRET
