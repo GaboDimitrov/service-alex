@@ -30,6 +30,7 @@ app.post('/addCustomer', customerController.add)
 app.post('/recentlyAdded', customerController.findByDate)
 app.post('/findByCarNumber', customerController.findByCarNumber)
 app.post('/updateCustomer', customerController.update)
+app.post('/updatePhone', customerController.updatePhoneNumber)
 
 if (process.env.NODE_ENV === 'production') {
     // Serve any static files

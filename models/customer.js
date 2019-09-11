@@ -7,6 +7,7 @@ const customerSchema = new Schema({
     carNumber: { type: String, unique: true },
     addedOn: { type : Date, default: Date.now },
     phoneNumber: { type: String },
+    selectedYear: { type: Number},
 
     // default is one year from now
     expiresOn: { type : Date, default: +new Date() + 365 * 24 * 60 * 60 * 1000 },

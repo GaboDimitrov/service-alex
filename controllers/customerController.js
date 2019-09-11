@@ -64,6 +64,26 @@ exports.findByCarNumber = function(req, res, next) {
     })
 }
 
+exports.updatePhoneNumber = function(req, res) {
+    const {carNumber, phoneNumber } = req.body
+
+    Customer.findOne({
+        carNumber: { "$regex": carNumber, "$options": 'i' }
+    }, (err, customer) => {
+        if (err) console.log(err)
+        
+        customer.phoneNumber = phoneNumber
+        Customer.findByIdAndUpdate(customer._id, customer, null, (err, newCustomer) => {
+            if (err) {
+                console.log(err)
+                next(err)
+            }
+            res.json({customer})
+        })
+        
+    })
+}
+
 exports.update = function(req, res, next) {
     const { customer } = req.body
     const expiresDateInMilisecs = +new Date() + (365 * customer.selectedYear) * 24 * 60 * 60 * 1000
