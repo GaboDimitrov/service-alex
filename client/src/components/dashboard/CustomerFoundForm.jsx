@@ -56,17 +56,16 @@ class CustomerFoundForm extends Component {
             selectedYear = 2
         }
         return selectedYear
-    } 
+    }
     render() {
         const { customer } = this.props
         const { expiresOnYear } = this.state
-        const { firstName, lastName, addedOn, expiresOn, selectedYear, notificationSent } = customer
+        const { firstName, lastName, addedOn, expiresOn, selectedYear } = customer
         const remainingDays = getRemainingDays(expiresOn)
         const remainingDaysClass = getRemainingDaysClass(remainingDays)
         const addedOnDate = new Date(addedOn).toLocaleDateString()
         const defaultYearSelected = selectedYear || this.calculateSelectedYear(addedOn, expiresOn)
         const yearSelected = (expiresOnYear || defaultYearSelected).toString()
-
         return(
             <React.Fragment>
                 <h2>Намерен клиент</h2>
@@ -79,38 +78,38 @@ class CustomerFoundForm extends Component {
                 </div>
                 <div>
                     <label className="yearChange" >
-                        <input 
-                            type="radio" 
-                            value="1" 
-                            checked={yearSelected === '1'} 
+                        <input
+                            type="radio"
+                            value="1"
+                            checked={yearSelected === '1'}
                             onChange={this.handleYearChange}
                             className="year-input"
                         />
                         1 година
                     </label>
                     <label className="yearChange" >
-                        <input 
-                            type="radio" 
-                            value="2" 
+                        <input
+                            type="radio"
+                            value="2"
                             checked={yearSelected === '2'}
-                            onChange={this.handleYearChange} 
+                            onChange={this.handleYearChange}
                             className="year-input"
                         />
                         2 години
                     </label>
                     <label className="yearChange" >
-                        <input 
-                            type="radio" 
-                            value="0.5" 
-                            checked={yearSelected === '0.5'} 
-                            onChange={this.handleYearChange} 
+                        <input
+                            type="radio"
+                            value="0.5"
+                            checked={yearSelected === '0.5'}
+                            onChange={this.handleYearChange}
                             className="year-input"
                         />
                         половин година
                     </label>
                 </div>
 
-                <Button bsStyle="primary" onClick={() => {this.handleClick()}} disabled={!notificationSent} >Обнови преглед</Button>
+                <Button bsStyle="primary" onClick={() => {this.handleClick()}}>Обнови преглед</Button>
                 <NotificationContainer/>
             </React.Fragment>
         )
@@ -119,8 +118,11 @@ class CustomerFoundForm extends Component {
 
 const getRemainingDays = expiresOn => {
     const expirationDate = new Date(expiresOn)
+const test = expirationDate < new Date();
     const timeDiff = Math.abs(expirationDate.getTime() - new Date().getTime());
     const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    console.log(diffDays);
     return diffDays
 }
 
