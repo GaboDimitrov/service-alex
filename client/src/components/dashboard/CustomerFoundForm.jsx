@@ -13,7 +13,7 @@ class CustomerFoundForm extends Component {
     }
 
     state = {
-        expiresOnYear: this.props.customer.selectedYear
+        expiresOnYear: this.props.customer.selectedYear || 1
     }
 
     handleYearChange(event) {
@@ -34,8 +34,8 @@ class CustomerFoundForm extends Component {
         })
 
         if (response.status === 200) {
-          clearDashboardForm()
-          NotificationManager.success('Клиента е обновен', 'Успех', 3000)
+            clearDashboardForm()
+            NotificationManager.success('Клиента е обновен', 'Успех', 3000)
         }
     }
 
